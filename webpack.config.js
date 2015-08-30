@@ -1,8 +1,10 @@
 module.exports = {
-    context: __dirname + "/src",
+    context: __dirname,
     entry: {
-        javascript: "./js/index.js",
-        html: "./html/index.html",
+        javascript: "./src/js/index.js",
+        html: "./src/html/index.html",
+        css: "./src/css/fixed-data-table.css",
+        app: ["webpack/hot/dev-server", "./dist/app.js"]
     },
     output: {
         path: __dirname + "/dist",
@@ -19,6 +21,9 @@ module.exports = {
             loaders: ["babel-loader?stage=1&optional=runtime"],
         }, {
             test: /\.html$/,
+            loader: "file?name=[name].[ext]",
+        }, {
+            test: /\.css$/,
             loader: "file?name=[name].[ext]",
         }],
     }

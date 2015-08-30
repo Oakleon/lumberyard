@@ -37,6 +37,10 @@ var rows = [
   // .... and more
 ];
 
+for(let i=3; i< 1000; i++) {
+    rows[i] = ["a"+i, "b"+i, "c"+i];
+}
+
 function rowGetter(rowIndex) {
   return rows[rowIndex];
 }
@@ -46,17 +50,17 @@ React.render(
     rowHeight={50}
     rowGetter={rowGetter}
     rowsCount={rows.length}
-    width={5000}
-    height={5000}
+    width={300}
+    height={500}
     headerHeight={50}>
     <Column
       label="Col 1"
-      width={3000}
+      width={150}
       dataKey={0}
     />
     <Column
       label="Col 2"
-      width={2000}
+      width={150}
       dataKey={1}
     />
   </Table>,
