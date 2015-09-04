@@ -1,0 +1,26 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <!-- encoding must be set for mocha's special characters to render properly -->
+    <link rel="stylesheet" href="src/css/mocha.css" />
+</head>
+
+<body>
+    <div id="mocha"></div>
+    <script src="src/vendor/mocha.js"></script>
+    <script>
+        mocha.ui('bdd');
+        mocha.reporter('html');
+    </script>
+    <script src="dist/test_bundle.js"></script>
+    <script>
+        if (window.mochaPhantomJS) {
+            mochaPhantomJS.run();
+        } else {
+            mocha.run();
+        }
+    </script>
+</body>
+
+</html>

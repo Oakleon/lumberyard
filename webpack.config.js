@@ -1,31 +1,35 @@
+var path = require('path');
+var webpack = require('webpack');
+
 module.exports = {
-    context: __dirname,
-    entry: {
-        javascript: "./src/js/index.js",
-        html: "./src/html/index.html",
-        css: "./src/css/fixed-data-table.css",
-        app: ["webpack/hot/dev-server", "./dist/app.js"]
-    },
+    devtool: 'eval',
+    entry: [
+        'webpack-hot-middleware/client',
+        './src/js/index'
+    ],
     output: {
-        path: __dirname + "/dist",
-        filename: "app.js",
+        path: path.join(__dirname, 'dist'),
+        filename: 'bundle.js',
+        publicPath: '/static/'
     },
+    plugins: [
+        new webpack.HotModuleReplacementPlugin(),
+        new webpack.NoErrorsPlugin()
+    ],
     module: {
-        preLoaders: [{
-            test: /\.js$/,
-            loader: "source-map-loader"
-        }],
         loaders: [{
             test: /\.js$/,
-            exclude: /node_modules/,
             loaders: ["babel-loader?stage=1&optional=runtime"],
+            include: path.join(__dirname, 'src')
         }, {
-            test: /\.html$/,
-            loader: "file?name=[name].[ext]",
+            test: /\.less$/,
+            loader: 'style-loader!css-loader!less-loader'
         }, {
             test: /\.css$/,
-            loader: "file?name=[name].[ext]",
-        }],
+            loader: 'style-loader!css-loader'
+        }, {
+            test: /\.(png|jpg)$/,
+            loader: 'url-loader?limit=8192'
+        }]
     }
-
-}
+};
