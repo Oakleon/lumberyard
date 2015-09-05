@@ -9,6 +9,8 @@ export function makeLog(name, start_time = Date.now()) {
 
 export function push(key, tags, message, t) {
 
+    key = key || uuid();
+
     let line = {
         time_offset: Date.now() - t.start_time,
         index: t.length,

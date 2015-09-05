@@ -1,9 +1,26 @@
 import Fetch from "isomorphic-fetch"
 import React, { Component } from "react";
 import Component1 from "./component1";
-import Yard from "./lumberyard";
+import * as Yard from "./lumberyard";
+import _Lo from "lodash";
 
+var FixedDataTable = require('fixed-data-table');
 require("../css/fixed-data-table.css");
+
+
+// =============================================================
+//
+//                        GLOBALS
+//
+// =============================================================
+
+let appupdate = () => {};
+
+// =============================================================
+//
+//                        GITHUB API
+//
+// =============================================================
 
 let getRepos = async function(name) {
     let response = await Fetch(`https://api.github.com/users/${name}/repos`)
@@ -11,33 +28,30 @@ let getRepos = async function(name) {
     return json;
 }
 
-let rows = [];
-
-let getRows = async function(name, rows, rowGetter, update) {
+let getRows = async function(name, yard) {
     let repos = await getRepos(name);
     repos.map((r)=>{
-        rows.push([r.id, r.language])
+        Yard.push(0, ["github"], r, yard);
     })
-    update(rows, rowGetter);
+    //update(rows, rowGetter);
     console.log(rows);
 }
 
-let rowReader = function() {
+// =============================================================
+//
+//                        REACT
+//
+// =============================================================
 
-}
 
-
-
-var FixedDataTable = require('fixed-data-table');
-
-var Table = FixedDataTable.Table;
-var Column = FixedDataTable.Column;
-
-let appupdate = () => {};
+let rows = [];
 
 let rowGetter = function rowGetter(rowIndex) {
   return rows[rowIndex];
 }
+
+var Table = FixedDataTable.Table;
+var Column = FixedDataTable.Column;
 
 export let App = React.createClass({
 
@@ -49,6 +63,7 @@ export let App = React.createClass({
         let self = this;
         let update = function (rows, rowGetter) {
             console.log("updating")
+            console.log(rows);
             self.setState({rows:rows, rowGetter:rowGetter})
         };
 
@@ -82,6 +97,33 @@ export let App = React.createClass({
     }
 })
 
-setTimeout(()=>{
-    getRows("timcash", rows, rowGetter, appupdate);
-}, 50);
+// =============================================================
+//
+//                        LUMBERYARD
+//
+// =============================================================
+
+
+let y1 = Yard.makeLog("gitevents");
+let r1 = Yard.makeReader();
+
+setInterval(()=>{
+    let logs     = Yard.read(r1, 1, y1);
+    //console.log(logs);
+    let messages = _Lo.pluck(logs, "message");
+
+    if(messages.length <= 0) return;
+
+    //console.log(messages);
+
+    let new_rows = _Lo.map(messages, (m) => {
+        return [m.id, m.language]
+    })
+
+    rows = rows.concat(new_rows);
+
+    appupdate(rows, rowGetter);
+
+}, 200);
+
+getRows("timcash", y1);
