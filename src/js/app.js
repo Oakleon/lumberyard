@@ -1,25 +1,29 @@
 import Fetch from "isomorphic-fetch"
 import React, { Component } from "react";
 import Component1 from "./component1";
-
+import Yard from "./lumberyard";
 
 require("../css/fixed-data-table.css");
 
-let getRepos = async function() {
-    let response = await Fetch("https://api.github.com/users/timcash/repos")
+let getRepos = async function(name) {
+    let response = await Fetch(`https://api.github.com/users/${name}/repos`)
     let json = await response.json()
     return json;
 }
 
 let rows = [];
 
-let setRows = async function(rows, rowGetter, update) {
-    let repos = await getRepos();
+let getRows = async function(name, rows, rowGetter, update) {
+    let repos = await getRepos(name);
     repos.map((r)=>{
         rows.push([r.id, r.language])
     })
     update(rows, rowGetter);
     console.log(rows);
+}
+
+let rowReader = function() {
+
 }
 
 
@@ -79,5 +83,5 @@ export let App = React.createClass({
 })
 
 setTimeout(()=>{
-    setRows(rows, rowGetter, appupdate);
+    getRows("timcash", rows, rowGetter, appupdate);
 }, 50);
